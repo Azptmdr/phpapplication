@@ -11,6 +11,26 @@ class RecaudoService
         if ($this->conexion->connect_error) {
             die("Error de conexión a la base de datos: " . $this->conexion->connect_error);
         }
+
+        
+    }
+
+    public function obtenerRecaudosPendientes()
+    {
+        $consulta = $this->conexion->prepare("SELECT * FROM RECAUDO WHERE ESTADO_RECAUDO = 'Cancelado' AND ESTADO_ENVIO = 'Falso'");
+        $consulta->execute();
+        $result = $consulta->get_result();
+
+        $recaudos = array();
+
+        while ($row = $result->fetch_assoc()) {
+            $recaudos[] = $row;
+        }
+
+        $consulta->close();
+
+        return $recaudos;
+
     }
 
     public function prepararConsulta($sql)
